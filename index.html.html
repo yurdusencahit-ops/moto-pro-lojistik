@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOTO-PRO | Kurumsal Lojistik Yönetim Merkezi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+.night-mode { background-color: #0f172a; color: white; }
+.night-mode .bg-white { background-color: #1e293b !important; color: white !important; }
+.glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-bottom: 3px solid #FFD700; }
+
+/* Bildirim Animasyonu */
+.notification-in { animation: slideIn 0.5s ease-out forwards; }
+.notification-out { animation: slideOut 0.5s ease-in forwards; }
+@keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
+
+.status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+
+<div class="bg-black text-white text-[9px] font-black text-center py-2 uppercase tracking-widest sticky top-0 z-[5000] flex justify-between px-6">
+<span><span class="status-dot mr-1"></span> GÜVENLİ TAŞIMACILIK PROTOKOLÜ AKTİF</span>
+<span class="text-yellow-400 italic"><i class="fa-solid fa-motorcycle mr-1"></i> <span id="kurye-sayac">1</span> KURYE ÇEVRİMİÇİ</span>
+</div>
+
+<nav class="glass-nav p-4 sticky top-4 z-[4500] mx-4 rounded-2xl shadow-lg flex justify-between items-center">
+<div class="text-2xl font-black italic tracking-tighter text-black">MOTO<span class="text-yellow-500">-PRO</span></div>
+<div class="flex gap-4">
+<a href="#about" class="text-[9px] font-black uppercase italic text-black border-b-2 border-yellow-400">Biz Kimiz</a>
+<a href="#security" class="text-[9px] font-black uppercase italic text-red-600 border-b-2 border-red-600">Yasal Uyarı</a>
+</div>
+</nav>
+
+<section class="py-10 px-4 max-w-xl mx-auto">
+<div class="bg-white p-8 rounded-[3rem] shadow-2xl border-t-8 border-yellow-400">
+<h2 class="text-2xl font-black text-center mb-6 italic uppercase text-black italic">Dijital <span class="text-yellow-500">Operasyon Merkezi</span></h2>
+<div class="space-y-4">
+<select id="city-select" onchange="loadDistricts()" class="w-full p-4 bg-slate-100 rounded-2xl font-bold border-none text-black">
+<option value="" disabled selected>Şehir Seçin</option>
+<option value="İstanbul">İstanbul</option>
+<option value="İzmir">İzmir</option>
+<option value="Bursa">Bursa</option>
+<option value="Antalya">Antalya</option>
+</select>
+<div class="grid grid-cols-2 gap-2">
+<select id="pick-up" class="p-4 bg-slate-50 rounded-xl text-[10px] font-bold text-black"><option disabled selected>Alım Bölgesi</option></select>
+<select id="drop-off" onchange="updateUI()" class="p-4 bg-slate-50 rounded-xl text-[10px] font-bold text-black"><option disabled selected>Teslim Bölgesi</option></select>
+</div>
+<div class="bg-black p-6 rounded-[2.5rem] text-center border-b-4 border-yellow-400">
+<p id="price-val" class="text-5xl font-black text-white italic tracking-tighter">0.00 TL</p>
+<p class="text-[8px] text-yellow-400 font-bold uppercase mt-1">Tahmini Varış: 30-45 Dakika</p>
+</div>
+
+<div class="grid grid-cols-1 gap-2 pt-4">
+<button onclick="sendOrder('patron')" class="bg-black text-white py-5 rounded-2xl font-black text-[10px] uppercase italic flex items-center justify-center gap-2 hover:bg-slate-800 transition-all">
+<i class="fa-solid fa-lock text-yellow-400"></i> Operasyon Raporu (Sadece Patron)
+</button>
+<button onclick="sendOrder('kurye')" class="bg-yellow-400 text-black py-5 rounded-2xl font-black text-[10px] uppercase italic flex items-center justify-center gap-2 border-b-4 border-black/20 hover:scale-[1.02] transition-all">
+<i class="fa-solid fa-paper-plane"></i> Saha Ekibine İş Emri Gönder
+</button>
+</div>
+
+<div class="grid grid-cols-2 gap-2 mt-2">
+<button onclick="sendStatus('alindi')" class="bg-blue-600 text-white py-4 rounded-xl font-black text-[9px] uppercase italic">📦 Paket Teslim Alındı</button>
+<button onclick="sendStatus('teslim')" class="bg-green-600 text-white py-4 rounded-xl font-black text-[9px] uppercase italic">✅ Paket Teslim Edildi</button>
+</div>
+</div>
+</div>
+</section>
+
+<section id="about" class="py-16 px-6 bg-slate-100 border-y border-slate-200">
+<div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-10">
+<div class="bg-white p-8 rounded-[2rem] shadow-sm text-center">
+<i class="fa-solid fa-shield-halved text-4xl text-yellow-500 mb-4"></i>
+<h3 class="font-black italic uppercase text-black mb-3">Biz Kimiz?</h3>
+<p class="text-[11px] text-slate-600 leading-relaxed font-medium text-black">Moto-Pro, 4 büyük şehirde eş zamanlı operasyon yürüten, bağımsız kurye ve göndericileri dijital bir platformda buluşturan teknoloji tabanlı lojistik organizasyonudur.</p>
+</div>
+<div class="bg-white p-8 rounded-[2rem] shadow-sm text-center border-t-4 border-yellow-400">
+<i class="fa-solid fa-rocket text-4xl text-yellow-500 mb-4"></i>
+<h3 class="font-black italic uppercase text-black mb-3 text-black">Misyonumuz</h3>
+<p class="text-[11px] text-slate-600 leading-relaxed font-medium text-black">Hızın ve güvenin adresi olarak; kurye operasyonlarını sıfır hata ve maksimum güvenlik protokolleri ile dijitalleştirip, sahayı tek merkezden yönetmek.</p>
+</div>
+<div class="bg-white p-8 rounded-[2rem] shadow-sm text-center">
+<i class="fa-solid fa-eye text-4xl text-yellow-500 mb-4"></i>
+<h3 class="font-black italic uppercase text-black mb-3 text-black text-black">Vizyonumuz</h3>
+<p class="text-[11px] text-slate-600 leading-relaxed font-medium text-black">Türkiye'nin 81 ilinde, 30 dakika altında teslimat garantisi veren en geniş ve en güvenilir bağımsız saha ekibi ağına sahip lider lojistik gücü olmak.</p>
+</div>
+</div>
+</section>
+
+<section id="security" class="py-16 px-6 bg-white">
+<div class="max-w-4xl mx-auto border-[6px] border-red-600 p-10 rounded-[3rem] bg-red-50/30">
+<h3 class="text-2xl font-black text-red-600 italic uppercase mb-6 text-center tracking-tighter">🛑 YASAL SORUMLULUK REDDİ VE GÜVENLİK BİLDİRGESİ</h3>
+<div class="text-[11px] text-slate-800 font-bold leading-relaxed space-y-4 italic">
+<p class="bg-red-100 p-2 rounded">⚠️ **MADDE 1:** Moto-Pro bir taşıma şirketi değil, bir ilan ve organizasyon platformudur. Taşınan tüm emtiaların içeriğinden gönderici ve bağımsız kurye müştereken ve müteselsilen sorumludur.</p>
+<p>📦 **MADDE 2:** Çalınan, hasar gören veya zayi olan paketlerde tüm maddi sorumluluk işi kabul eden kuryeye aittir. Şirketimiz bu tür durumlarda tazminat yükümlülüğü altında değildir.</p>
+<p class="text-red-700">🚫 **MADDE 3 (KRİTİK):** Uyuşturucu maddeler, patlayıcı/yanıcı kimyasallar, kaçak tütün/içki ve yasal olmayan her türlü maddenin taşınması KESİNLİKLE YASAKTIR. Bu maddelerin tespiti halinde emniyet birimlerine kurye ve gönderici bilgileri (IP, telefon, konum) derhal rapor edilecektir.</p>
+<p>📑 **MADDE 4:** Platformumuz üzerinden gerçekleşen tüm işlemler dijital olarak kayıt altına alınmaktadır. Adli vakalarda kuryenin sabıka ve ruhsat bilgileri yasal mercilere sunulacaktır.</p>
+</div>
+</div>
+</section>
+
+<div id="live-notification" class="fixed bottom-10 left-6 z-[6000] hidden">
+<div class="bg-white border-l-4 border-green-500 p-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[300px]">
+<div class="bg-green-100 p-3 rounded-full text-green-600 animate-pulse"><i class="fa-solid fa-box-open"></i></div>
+<div>
+<p id="notif-text" class="text-[10px] font-black italic text-black uppercase leading-tight"></p>
+<p class="text-[8px] font-bold text-slate-400 uppercase mt-1 italic">Operasyon Başarıyla Tamamlandı</p>
+</div>
+</div>
+</div>
+
+<div class="fixed bottom-6 right-6 z-[6000] flex flex-col items-end">
+<div id="asistan-pencere" class="hidden bg-white w-80 rounded-[2.5rem] shadow-2xl border-2 border-yellow-400 mb-4 p-6 scale-in-center">
+<div class="flex items-center gap-3 mb-4">
+<div class="bg-black text-yellow-400 p-3 rounded-full"><i class="fa-solid fa-id-card-clip text-xl"></i></div>
+<p class="text-[11px] font-black uppercase italic text-black">Saha Kayıt Protokolü</p>
+</div>
+<p class="text-[10px] font-bold text-slate-500 mb-4 italic">Ekibe katılmak için aşağıdaki belgeleri WhatsApp üzerinden iletmeniz ZORUNLUDUR:</p>
+<ul class="text-[9px] font-black text-black space-y-3 mb-6 uppercase italic">
+<li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> E-Devlet Sabıka Kaydı</li>
+<li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Motosiklet Ruhsat Görüntüsü</li>
+<li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> 4 Cepheden Fotoğraf (Plaka Görünür)</li>
+<li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Güncel Özçekim (Selfie)</li>
+<li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Ehliyet (Ön / Arka)</li>
+</ul>
+<button onclick="window.open('https://wa.me/905307366945?text=Kurye kaydı için tüm evraklarım hazırdır.')" class="w-full bg-black text-white py-4 rounded-xl text-[11px] font-black uppercase italic hover:bg-yellow-400 hover:text-black transition-all">Evrakları Onaya Gönder</button>
+</div>
+<button onclick="document.getElementById('asistan-pencere').classList.toggle('hidden')" class="bg-yellow-400 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center border-4 border-black animate-bounce hover:scale-110 transition-all">
+<i class="fa-solid fa-user-plus text-2xl text-black"></i>
+</button>
+</div>
+
+<script>
+const myPhone = "905307366945";
+const cities = {
+"İstanbul": ["Etiler", "Beşiktaş", "Kadıköy", "Şişli", "Esenyurt", "Ataşehir"],
+"İzmir": ["Alsancak", "Karşıyaka", "Bornova", "Buca", "Konak"],
+"Bursa": ["Nilüfer", "Osmangazi", "Yıldırım", "Mudanya"],
+"Antalya": ["Lara", "Konyaaltı", "Muratpaşa", "Alanya"]
+};
+
+const liveEvents = [
+"İstanbul Etiler'de paket teslim edildi.",
+"Antalya Lara'da kurye yola çıktı.",
+"İzmir Karşıyaka'da operasyon başarılı.",
+"Bursa Nilüfer'de teslimat tamamlandı.",
+"İstanbul Kadıköy'de yeni sipariş alındı.",
+"İzmir Bornova'da kurye paketi aldı."
+];
+
+let currentData = { price: 0, courier: 0, profit: 0 };
+
+// KURYE SAYACI (1'DEN 610'A)
+function startCounter() {
+let count = 1;
+const target = 610;
+const timer = setInterval(() => {
+count += Math.floor(Math.random() * 8) + 5;
+if (count >= target) {
+document.getElementById('kurye-sayac').innerText = target;
+clearInterval(timer);
+} else {
+document.getElementById('kurye-sayac').innerText = count;
+}
+}, 15);
+}
+
+// CANLI BİLDİRİM SİSTEMİ
+function showNotification() {
+const notif = document.getElementById('live-notification');
+const text = document.getElementById('notif-text');
+setInterval(() => {
+const randomEvent = liveEvents[Math.floor(Math.random() * liveEvents.length)];
+text.innerText = randomEvent;
+notif.classList.remove('hidden', 'notification-out');
+notif.classList.add('notification-in');
+setTimeout(() => {
+notif.classList.remove('notification-in');
+notif.classList.add('notification-out');
+}, 4000);
+}, 9000);
+}
+
+window.onload = () => { startCounter(); showNotification(); };
+
+function loadDistricts() {
+const c = document.getElementById('city-select').value;
+const p = document.getElementById('pick-up'), d = document.getElementById('drop-off');
+p.innerHTML = d.innerHTML = '<option disabled selected>Bölge Seçin</option>';
+cities[c].sort().forEach(item => {
+p.innerHTML += `<option value="${item}">${item}</option>`;
+d.innerHTML += `<option value="${item}">${item}</option>`;
+});
+}
+
+function updateUI() {
+const p = document.getElementById('pick-up').value, d = document.getElementById('drop-off').value;
+if(p && d && p !== "Bölge Seçin") {
+let base = 420, myFix = 180;
+currentData.price = base + myFix;
+currentData.courier = base * 0.9;
+currentData.profit = myFix + (base * 0.1);
+document.getElementById('price-val').innerText = currentData.price.toFixed(2) + " TL";
+}
+}
+
+function sendOrder(target) {
+const city = document.getElementById('city-select').value;
+const p = document.getElementById('pick-up').value, d = document.getElementById('drop-off').value;
+if(!city || p === "Bölge Seçin") return alert("Lütfen bölgeleri seçin!");
+
+let msg = target === 'patron' ?
+`🛡️ *PATRON RAPORU:*%0A🏢 Şehir: ${city}%0A📍 Rota: ${p} -> ${d}%0A💰 Kurye: ${currentData.courier.toFixed(2)} TL%0A⚠️ Tahsilat: ${currentData.price.toFixed(2)} TL%0A🔥 *NET KÂR: ${currentData.profit.toFixed(2)} TL*` :
+`🚀 *İŞ EMRİ | MOTO-PRO:*%0A🏢 Şehir: ${city}%0A📍 Rota: ${p} ➡️ ${d}%0A💰 *Hakedişin: ${currentData.courier.toFixed(2)} TL*%0A💵 Tahsilat: ${currentData.price.toFixed(2)} TL%0A👇 Onay için 'ALDIM' yazın!`;
+window.open(`https://wa.me/${target === 'patron' ? myPhone : ''}?text=${msg}`);
+}
+
+function sendStatus(type) {
+let msg = type === 'alindi' ? "📦 *MOTO-PRO BİLGİ:* Paket tarafımdan teslim alınmıştır. Hedefe ilerliyorum." : "✅ *MOTO-PRO BİLGİ:* Paket alıcıya teslim edilmiş, ödeme tahsil edilmiştir.";
+window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+}
+</script>
+</body>
+</html>
+
