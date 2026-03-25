@@ -9,67 +9,124 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
 body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
-.glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-bottom: 3px solid #FFD700; }
+.glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 3px solid #FFD700; }
 .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+.hero-img { border-radius: 3rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 8px solid white; }
 </style>
 </head>
-<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden pb-10">
 
 <div class="bg-black text-white text-[9px] font-black text-center py-2 uppercase tracking-widest sticky top-0 z-[5000] flex justify-between px-6">
 <span><span class="status-dot mr-1"></span> GÜVENLİ TAŞIMACILIK PROTOKOLÜ AKTİF</span>
-<span class="text-yellow-400 italic"><i class="fa-solid fa-motorcycle mr-1"></i> 610 KURYE ÇEVRİMİÇİ</span>
+<span class="text-yellow-400 italic"><i class="fa-solid fa-motorcycle mr-1"></i> <span id="kurye-sayac">610</span> KURYE ÇEVRİMİÇİ</span>
 </div>
 
 <nav class="glass-nav p-4 sticky top-4 z-[4500] mx-4 rounded-2xl shadow-lg flex justify-between items-center">
 <div class="text-2xl font-black italic tracking-tighter text-black">MOTO<span class="text-yellow-500">-PRO</span></div>
 <div class="flex gap-4">
-<a href="#" class="text-[9px] font-black uppercase italic text-black border-b-2 border-yellow-400">Ana Sayfa</a>
-<a href="#" class="text-[9px] font-black uppercase italic text-red-600">Yasal Uyarı</a>
+<a href="#about" class="text-[9px] font-black uppercase italic text-black border-b-2 border-yellow-400">Biz Kimiz</a>
+<a href="#security" class="text-[9px] font-black uppercase italic text-red-600 border-b-2 border-red-600">Yasal Uyarı</a>
 </div>
 </nav>
 
-<section class="py-10 px-4 max-w-xl mx-auto">
-<div class="bg-white p-8 rounded-[3rem] shadow-2xl border-t-8 border-yellow-400 relative">
-<h2 class="text-xl font-black text-center mb-6 italic uppercase text-slate-500">DİJİTAL <span class="text-orange-600">OPERASYON MERKEZİ</span></h2>
+<section class="mt-8 px-4 max-w-xl mx-auto">
+<div class="relative">
+<img src="https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?q=80&w=2015&auto=format&fit=crop" alt="Moto Kurye" class="hero-img w-full h-64 object-cover mb-4">
+<div class="absolute bottom-10 left-6 bg-yellow-400 text-black px-4 py-2 rounded-xl font-black italic text-xs shadow-xl">
+TÜRKİYE'NİN EN GENİŞ AGİ
+</div>
+</div>
+</section>
 
-<div class="space-y-4 text-center">
-<select class="w-full p-4 bg-slate-100 rounded-2xl font-bold border-none text-slate-500 text-sm">
-<option disabled selected>Şehir Seçin</option>
-<option>İstanbul</option>
+<section class="py-6 px-4 max-w-xl mx-auto">
+<div class="bg-white p-8 rounded-[3rem] shadow-2xl border-t-8 border-yellow-400">
+<h2 class="text-2xl font-black text-center mb-6 italic uppercase text-black">Dijital <span class="text-yellow-500">Operasyon Merkezi</span></h2>
+
+<div class="space-y-4">
+<select id="city-select" onchange="loadDistricts()" class="w-full p-4 bg-slate-100 rounded-2xl font-bold border-none text-black">
+<option value="" disabled selected>Şehir Seçin</option>
+<option value="İstanbul">İstanbul</option>
+<option value="İzmir">İzmir</option>
+<option value="Bursa">Bursa</option>
+<option value="Antalya">Antalya</option>
 </select>
 
-<div class="bg-slate-900 p-8 rounded-[2.5rem] text-center border-b-4 border-yellow-500 shadow-inner">
-<p class="text-5xl font-black text-white italic tracking-tighter">0.00 TL</p>
-<p class="text-[8px] text-yellow-400 font-bold uppercase mt-2 italic">TAHSİLAT BEKLENİYOR...</p>
+<div class="grid grid-cols-2 gap-2">
+<select id="pick-up" class="p-4 bg-slate-50 rounded-xl text-[10px] font-bold text-black border border-slate-200"><option disabled selected>Alım Bölgesi</option></select>
+<select id="drop-off" onchange="updateUI()" class="p-4 bg-slate-50 rounded-xl text-[10px] font-bold text-black border border-slate-200"><option disabled selected>Teslim Bölgesi</option></select>
 </div>
 
-<button class="w-full bg-black text-white py-5 rounded-2xl font-black text-[10px] uppercase italic tracking-widest flex items-center justify-center gap-2">
-<i class="fa-solid fa-lock text-yellow-400"></i> OPERASYON RAPORU (SADECE PATRON)
-</button>
+<div class="flex justify-center my-4">
+<img src="https://cdn-icons-png.flaticon.com/512/2972/2972185.png" class="h-16 w-16 opacity-20">
+</div>
 
-<button class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black text-[10px] uppercase italic tracking-widest">
-<i class="fa-solid fa-warning"></i> SAHA EKİBİNE İŞ EMRİ GÖNDER
-</button>
+<div class="bg-black p-6 rounded-[2.5rem] text-center border-b-4 border-yellow-400 shadow-xl shadow-yellow-400/10">
+<p id="price-val" class="text-5xl font-black text-white italic tracking-tighter">0.00 TL</p>
+<p class="text-[8px] text-yellow-400 font-bold uppercase mt-1">Tahmini Varış: 30-45 Dakika</p>
+</div>
 
-<div class="grid grid-cols-2 gap-3 mt-4">
-<button class="bg-blue-600 text-white py-4 rounded-xl font-black text-[9px] uppercase italic shadow-lg shadow-blue-200">
-<i class="fa-solid fa-box mr-1"></i> PAKET TESLİM ALINDI
+<div class="grid grid-cols-1 gap-2 pt-4">
+<button onclick="sendOrder('patron')" class="bg-black text-white py-5 rounded-2xl font-black text-[10px] uppercase italic flex items-center justify-center gap-2 hover:bg-slate-800 transition-all">
+<i class="fa-solid fa-lock text-yellow-400"></i> Operasyon Raporu (Sadece Patron)
 </button>
-<button class="bg-green-600 text-white py-4 rounded-xl font-black text-[9px] uppercase italic shadow-lg shadow-green-200">
-<i class="fa-solid fa-check-double mr-1"></i> PAKET TESLİM EDİLDİ
+<button onclick="sendOrder('kurye')" class="bg-yellow-400 text-black py-5 rounded-2xl font-black text-[10px] uppercase italic flex items-center justify-center gap-2 border-b-4 border-black/20 hover:scale-[1.02] transition-all">
+<i class="fa-solid fa-paper-plane"></i> Saha Ekibine İş Emri Gönder
 </button>
 </div>
 </div>
 </div>
 </section>
 
-<div class="fixed bottom-6 right-6 z-[6000]">
-<button class="bg-yellow-400 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center border-4 border-slate-900">
-<i class="fa-solid fa-user-plus text-2xl text-slate-900"></i>
-</button>
+<section class="max-w-xl mx-auto grid grid-cols-2 gap-4 px-4 mt-6">
+<div class="bg-white p-4 rounded-3xl shadow-lg border border-slate-100">
+<img src="https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?q=80&w=2070&auto=format&fit=crop" class="rounded-2xl h-24 w-full object-cover mb-2">
+<p class="text-[9px] font-black uppercase text-center">Şehir İçi Teslimat</p>
 </div>
+<div class="bg-white p-4 rounded-3xl shadow-lg border border-slate-100">
+<img src="https://images.unsplash.com/photo-1521791136064-7986c2923216?q=80&w=2069&auto=format&fit=crop" class="rounded-2xl h-24 w-full object-cover mb-2">
+<p class="text-[9px] font-black uppercase text-center">Anlık Takip</p>
+</div>
+</section>
 
+<script>
+// Senin mevcut JavaScript kodların buraya gelecek (loadDistricts, updateUI, sendOrder vb.)
+const myPhone = "905307366945";
+const cities = {
+"İstanbul": ["Etiler", "Beşiktaş", "Kadıköy", "Şişli", "Esenyurt", "Ataşehir"],
+"İzmir": ["Alsancak", "Karşıyaka", "Bornova", "Buca", "Konak"],
+"Bursa": ["Nilüfer", "Osmangazi", "Yıldırım", "Mudanya"],
+"Antalya": ["Lara", "Konyaaltı", "Muratpaşa", "Alanya"]
+};
+
+function loadDistricts() {
+const c = document.getElementById('city-select').value;
+const p = document.getElementById('pick-up'), d = document.getElementById('drop-off');
+p.innerHTML = d.innerHTML = '<option disabled selected>Bölge Seçin</option>';
+cities[c].sort().forEach(item => {
+p.innerHTML += `<option value="${item}">${item}</option>`;
+d.innerHTML += `<option value="${item}">${item}</option>`;
+});
+}
+
+function updateUI() {
+const p = document.getElementById('pick-up').value, d = document.getElementById('drop-off').value;
+if(p && d && p !== "Bölge Seçin") {
+let base = 420, myFix = 180;
+let price = base + myFix;
+document.getElementById('price-val').innerText = price.toFixed(2) + " TL";
+}
+}
+
+function sendOrder(target) {
+const city = document.getElementById('city-select').value;
+const p = document.getElementById('pick-up').value, d = document.getElementById('drop-off').value;
+if(!city || p === "Bölge Seçin") return alert("Lütfen bölgeleri seçin!");
+
+let msg = `🚀 *İŞ EMRİ:* ${city} / ${p} -> ${d}`;
+window.open(`https://wa.me/${target === 'patron' ? myPhone : ''}?text=${msg}`);
+}
+</script>
 </body>
 </html>
 
