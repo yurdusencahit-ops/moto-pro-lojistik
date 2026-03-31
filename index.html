@@ -1,158 +1,172 @@
-const express = require("express");
-const app = express();
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLOSSGO | VIP Mobil Detailing</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root { --gold: #FFD700; --whatsapp-color: #25D366; --bg: #050505; --card: rgba(20, 20, 20, 0.95); --text: #ffffff; --border: #222; }
+body.light-mode { --bg: #f5f5f5; --card: #ffffff; --text: #1a1a1a; --border: #ddd; }
+* { margin: 0; padding: 0; box-sizing: border-box; transition: 0.3s; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+.bg-slider { position: fixed; width: 100vw; height: 100vh; z-index: -1; background-size: cover; background-position: center; filter: brightness(0.15); transition: 0.8s; }
+header { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; }
+.logo { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--gold); letter-spacing: 2px; }
+.call-btn { color: var(--gold); font-weight: bold; text-decoration: none; border: 2px solid var(--gold); padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; }
+.container { max-width: 1400px; margin: auto; padding: 30px 5%; }
+.section-title { font-size: 20px; margin: 40px 0 20px; border-left: 5px solid var(--gold); padding-left: 15px; color: var(--gold); text-transform: uppercase; }
 
-app.use(express.json());
+.about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+.about-card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 15px; }
+.about-card h4 { color: var(--gold); margin-bottom: 12px; font-size: 13px; text-transform: uppercase; }
 
-let siparisler = [];
+.status-bar { background: linear-gradient(90deg, rgba(20,20,20,1) 0%, rgba(40,40,40,1) 100%); border: 1px solid var(--gold); padding: 12px 25px; border-radius: 50px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
 
-// ANA SAYFA (MÜŞTERİ)
-app.get("/", (req, res) => {
-res.send(`
-<h1>MotoPro Kurye</h1>
-<input id="adres" placeholder="Adres gir">
-<button onclick="gonder()">Sipariş</button>
-<br><br>
-<a href="/login">Giriş</a>
+.main-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 30px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 30px; margin-bottom: 20px; position: relative; }
+.price { font-size: 32px; font-weight: 700; color: var(--gold); margin: 10px 0; display: block; }
 
-<script>
-function gonder(){
-fetch("/siparis",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-adres:document.getElementById("adres").value
-})
-}).then(()=>alert("Sipariş alındı"));
-}
-</script>
-`);
-});
+.btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.btn { padding: 15px; border-radius: 10px; font-weight: 800; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 11px; cursor: pointer; border: none; }
+.btn-randevu { background: var(--gold); color: #000; }
+.btn-whatsapp { background: var(--whatsapp-color); color: #fff; }
 
-// LOGIN
-app.get("/login", (req, res) => {
-res.send(`
-<h2>Giriş</h2>
-<input id="k"><br>
-<input id="s" type="password"><br>
-<button onclick="giris()">Giriş</button>
+.trust-box { background: rgba(255,215,0,0.05); border: 1px dashed var(--gold); padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; font-size: 11px; font-weight: bold; }
 
-<script>
-function giris(){
-let k=document.getElementById("k").value;
-let s=document.getElementById("s").value;
+.brand-logos { margin: 30px 0; text-align: center; padding: 25px; background: rgba(255, 255, 255, 0.03); border-radius: 20px; border: 1px solid var(--border); }
+.logo-strip img { height: 35px; margin: 0 15px; filter: grayscale(1) brightness(2); }
+body.light-mode .logo-strip img { filter: grayscale(0) brightness(1); }
 
-if(k=="admin" && s=="1234"){
-window.location="/admin";
-}
-else if(k=="kurye" && s=="1234"){
-window.location="/kurye";
-}
-else{
-alert("Hatalı");
-}
-}
-</script>
-`);
-});
+.contact-form { background: var(--card); border: 2px solid var(--gold); padding: 30px; border-radius: 20px; margin-top: 30px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 12px; color: var(--gold); font-weight: bold; }
+.form-group input, .form-group select { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); border-radius: 8px; }
 
-// ADMIN
-app.get("/admin", (req, res) => {
-res.send(`
-<h2>Admin Panel</h2>
-<div id="liste"></div>
+.op-center { background: var(--card); border: 1px solid var(--border); border-radius: 25px; padding: 25px; height: fit-content; position: sticky; top: 100px; }
+.log-item { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+.status-badge { font-weight: bold; border: 1px solid; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
 
-<script>
-function yukle(){
-fetch("/siparisler")
-.then(r=>r.json())
-.then(data=>{
-let html="";
-data.forEach(s=>{
-html+=\`
+@media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } .status-bar { flex-direction: column; gap: 10px; border-radius: 15px; } }
+</style>
+</head>
+<body>
+
+<div class="bg-slider" id="bg-slider"></div>
+
+<header>
+<div class="logo">GLOSSGO</div>
+<a href="tel:05307366945" class="call-btn"><i class="fas fa-phone-alt"></i> 0530 736 69 45</a>
+</header>
+
+<div class="container">
+<div class="about-grid">
+<div class="about-card"><h4>Profesyonel Ekip</h4><p>İstanbul'un seçkin semtlerinde mobil butik detailing hizmeti.</p></div>
+<div class="about-card"><h4>Misyonumuz</h4><p>Lüksü kapınıza getiriyor, zamanınızı size geri veriyoruz.</p></div>
+<div class="about-card"><h4>Kalite</h4><p>Sadece pH nötr ve premium araç bakım ürünleri kullanıyoruz.</p></div>
+</div>
+
+<div class="status-bar">
+<span><i class="fas fa-shield-alt" style="color:var(--gold)"></i> VIP BUTİK HİZMET / <span id="mode-text">MOD AKTİF</span></span>
+<span style="color:var(--gold); font-weight:bold;">İSTANBUL: 18°C - UYGULAMA İÇİN MÜKEMMEL</span>
+</div>
+
+<div class="main-layout">
 <div>
-\${s.adres} - \${s.durum}
-<button onclick="sil(\${s.id})">Sil</button>
-</div>\`;
-});
-document.getElementById("liste").innerHTML=html;
-});
-}
+<div class="trust-box">
+<i class="fas fa-file-signature" style="font-size: 20px; color:var(--gold);"></i>
+<span>KURUMSAL GİDERLEŞTİRME: Şirket talepleri için Gider Pusulası (VUK 234) kabul edilmektedir. Bilgi için arayınız.</span>
+</div>
 
-function sil(id){
-fetch("/sil/"+id,{method:"POST"}).then(yukle);
-}
+<h2 class="section-title">Paketler</h2>
+<div class="card">
+<h3>GLOSS-LIGHT</h3>
+<span class="price">950 TL</span>
+<p style="opacity:0.7; font-size:13px;">Dış Yıkama + Jant Detayı + Lastik Bakımı</p>
+<div class="btn-group">
+<a href="#randevu" class="btn btn-randevu">RANDEVU</a>
+<a href="https://wa.me/905307366945" class="btn btn-whatsapp">WHATSAPP</a>
+</div>
+</div>
 
-setInterval(yukle,2000);
-</script>
-`);
-});
+<div class="card" style="border-color: var(--gold);">
+<h3>FORZA-TOUCH</h3>
+<span class="price">1.450 TL</span>
+<p style="opacity:0.7; font-size:13px;">İç-Dış Detaylı Bakım + Nano Cila Koruma</p>
+<div class="btn-group">
+<a href="#randevu" class="btn btn-randevu">RANDEVU</a>
+<a href="https://wa.me/905307366945" class="btn btn-whatsapp">WHATSAPP</a>
+</div>
+</div>
 
-// KURYE
-app.get("/kurye", (req, res) => {
-res.send(`
-<h2>Kurye Panel</h2>
-<div id="liste"></div>
+<div class="brand-logos">
+<div class="logo-strip">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Mercedes-Benz_Logo_%282011-present%29.svg/2560px-Mercedes-Benz_Logo_%282011-present%29.svg.png" alt="Mercedes">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/BMW_Logo_v2.svg/2048px-BMW_Logo_v2.svg.png" alt="BMW">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Porsche_Crest_%282023%29.svg/2560px-Porsche_Crest_%282023%29.svg.png" alt="Porsche">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Audi_logo_detail.svg/2560px-Audi_logo_detail.svg.png" alt="Audi">
+</div>
+</div>
+
+<div class="contact-form" id="randevu">
+<h3 style="color:var(--gold); text-align:center; margin-bottom:20px;">VIP RANDEVU</h3>
+<form onsubmit="alert('Talebiniz alındı!'); return false;">
+<div class="form-group"><label>Ad Soyad</label><input type="text" required></div>
+<div class="form-group"><label>Telefon</label><input type="tel" required></div>
+<div class="form-group">
+<label>Ödeme Tipi</label>
+<select>
+<option>Bireysel Ödeme (Nakit/FAST)</option>
+<option>Kurumsal Gider Pusulası Talebi</option>
+</select>
+</div>
+<button type="submit" class="btn btn-randevu" style="width:100%">RANDEVU TALEBİ GÖNDER</button>
+</form>
+</div>
+</div>
+
+<div class="op-center">
+<h3 style="font-size: 15px; margin-bottom: 15px; color: var(--gold); border-bottom:1px solid #333; padding-bottom:10px;">CANLI OPERASYON</h3>
+<div id="log-list"></div>
+</div>
+</div>
+</div>
 
 <script>
-function yukle(){
-fetch("/siparisler")
-.then(r=>r.json())
-.then(data=>{
-let html="";
-data.forEach(s=>{
-html+=\`
-<div>
-\${s.adres} - \${s.durum}
-<button onclick="kabul(\${s.id})">Al</button>
-<button onclick="teslim(\${s.id})">Teslim</button>
-</div>\`;
-});
-document.getElementById("liste").innerHTML=html;
-});
+function updateTheme() {
+const h = new Date().getHours();
+const isDay = h >= 7 && h < 19;
+const b = document.body;
+const bg = document.getElementById('bg-slider');
+const modeText = document.getElementById('mode-text');
+if (isDay) {
+b.classList.add('light-mode'); modeText.innerText = "GÜNDÜZ MODU";
+bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1920')";
+bg.style.filter = "brightness(0.7)";
+} else {
+b.classList.remove('light-mode'); modeText.innerText = "GECE MODU";
+bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1603510825319-a9c15ed99683?q=80&w=1920')";
+bg.style.filter = "brightness(0.15)";
 }
-
-function kabul(id){
-fetch("/kabul/"+id,{method:"POST"}).then(yukle);
 }
+updateTheme(); setInterval(updateTheme, 60000);
 
-function teslim(id){
-fetch("/teslim/"+id,{method:"POST"}).then(yukle);
+const semtler = ["Etiler", "Bebek", "Maslak", "Acarkent", "Zekeriyaköy", "Tarabya"];
+const aksiyonlar = [
+{txt: "VIP İşlem Tamamlandı", badge: "BİTTİ", color: "#00ff00"},
+{txt: "Ekibimiz Yola Çıktı", badge: "YOLDA", color: "#00bfff"},
+{txt: "Konuma Varış Yapıldı", badge: "VARDI", color: "#ff00ff"}
+];
+function logEkle() {
+const l = document.getElementById('log-list');
+const s = semtler[Math.floor(Math.random() * semtler.length)];
+const a = aksiyonlar[Math.floor(Math.random() * aksiyonlar.length)];
+l.insertAdjacentHTML('afterbegin', `<div class="log-item"><span>📍 <b>${s}</b> / ${a.txt}</span> <span class="status-badge" style="color:${a.color}; border-color:${a.color}">${a.badge}</span></div>`);
+if (l.children.length > 10) l.lastElementChild.remove();
 }
-
-setInterval(yukle,2000);
+setInterval(logEkle, 5000); logEkle();
 </script>
-`);
-});
+</body>
+</html>
 
-// API
-
-app.post("/siparis", (req,res)=>{
-let s = req.body;
-s.id = Date.now();
-s.durum = "Bekliyor";
-siparisler.push(s);
-res.json(s);
-});
-
-app.get("/siparisler",(req,res)=>{
-res.json(siparisler);
-});
-
-app.post("/kabul/:id",(req,res)=>{
-let s = siparisler.find(x=>x.id==req.params.id);
-if(s) s.durum="Yolda";
-res.json(s);
-});
-
-app.post("/teslim/:id",(req,res)=>{
-let s = siparisler.find(x=>x.id==req.params.id);
-if(s) s.durum="Teslim Edildi";
-res.json(s);
-});
-
-app.post("/sil/:id",(req,res)=>{
-siparisler = siparisler.filter(x=>x.id!=req.params.id);
-res.json({ok:true});
-});
-
-app.listen(3000,()=>console.log("Çalışıyor: http://localhost:3000"));
